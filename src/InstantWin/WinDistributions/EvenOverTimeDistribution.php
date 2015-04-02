@@ -72,8 +72,14 @@ class EvenOverTimeDistribution extends AbstractWinDistribution implements
               / $estimatedRemainingPlays
               * $this->sparsityFactor;
 		
+        // Give each player a small chance to win, regardless of the above algorithm,
+        // making sure 1) to never exceed the number of available prizes and 2) to gauge
+        // the chance to win to the number of plays so far.
+        if (($this->getCurrentWinCount() < $this->getMaxWinCount()) && $this->getPlayCount() > 0)
+            $odds = max ($odds, min (self::MIN_ODDS, 1.0/$this->getPlayCount()));
+        
 		// debug
-        printf ("odds=%12.4f, desiredWinCount-wins=%12.4f\n",
+        printf ("odds=%16.6g,\tdesiredWinCount-wins=%16.6g\n",
             $odds, ($desiredWinCount - $this->getCurrentWinCount()));
 		
         return $odds;

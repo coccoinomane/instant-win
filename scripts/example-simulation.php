@@ -21,7 +21,7 @@ $end = strtotime("+60 days");
 $maxWins = 40;
 
 // how many players in the full time interval? Set to 1 for a quick test run
-$num_plays = 1000;
+$num_plays = 10000;
 
 // Amplitude of the wins probability distribution. A large value means
 // that prizes will be awarded more evenly in the time period, but also
