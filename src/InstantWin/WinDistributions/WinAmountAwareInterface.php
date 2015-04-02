@@ -1,6 +1,6 @@
 <?php
 
-namespace InstantWin\Distribution;
+namespace InstantWin\WinDistributions;
 
 
 interface WinAmountAwareInterface

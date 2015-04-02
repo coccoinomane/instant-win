@@ -1,6 +1,6 @@
 <?php
 
-namespace InstantWin\Distribution;
+namespace InstantWin\WinDistributions;
 
 use InstantWin\TimePeriod;
 
@@ -10,11 +10,10 @@ use InstantWin\TimePeriod;
  *
  * @author Konr Ness <konrness@gmail.com>
  */
-class EvenOverTimeDistribution extends AbstractDistribution implements
+class EvenOverTimeDistribution extends AbstractWinDistribution implements
     TimePeriodAwareInterface,
     WinAmountAwareInterface
 {
-    const MIN_ODDS = 0.00001;
 
     /**
      * @var TimePeriod
@@ -37,22 +36,47 @@ class EvenOverTimeDistribution extends AbstractDistribution implements
     protected $maxWinCount;
 
     /**
+     * Arbitrary amplitude of the winning odds. If you lower it, wins will be more
+     * clustered close to the end time; increasing it will make the wins more
+     * evenly spaced but less random.
+     *
+     * @var float
+     */
+	protected $sparsityFactor = 5;
+
+
+    /**
      * Get the odds for a single play at this moment in time
      *
      * @return float Number from 0.000 to 0.999
      */
     public function getOdds()
     {
-        // determine percentage of wins awarded
+        // determine fraction of time elapsed; this is the same as the
+		// percentage of wins awarded so far, assuming that the prizes have been
+		// awarded evenly in time
         $timePercentage = $this->getTimePeriod()->getCompletion();
 
+		// number of wins we should have awarded so far if we were truly
+		// following an even-over-time distribution
         $desiredWinCount = $timePercentage * $this->getMaxWinCount();
 
-        // this assumes a linear distribution of plays throughout the day
+        // estimated number of players until the end of the lottery, based
+		// on the current plays and assuming a constant time distribution
         $estimatedRemainingPlays = ($this->getPlayCount() / $timePercentage) - $this->getPlayCount();
         $estimatedRemainingPlays = max(1, $estimatedRemainingPlays);
 
-        return ($desiredWinCount - $this->getCurrentWinCount()) / $estimatedRemainingPlays * 5;
+		// the odds of winning are directly proportional to the prizes we haven't assigned so far,
+		// and inversely proportional to our estimate of the remaining players.
+		$odds = ($desiredWinCount - $this->getCurrentWinCount())
+              / $estimatedRemainingPlays
+              * $this->sparsityFactor;
+		
+		// debug
+        printf ("odds=%12.4f, desiredWinCount-wins=%12.4f\n",
+            $odds, ($desiredWinCount - $this->getCurrentWinCount()));
+		
+        return $odds;
 
     }
 
@@ -95,6 +119,14 @@ class EvenOverTimeDistribution extends AbstractDistribution implements
     }
 
     /**
+     * @param float $sparsityFactor
+     */
+    public function setSparsityFactor($sparsityFactor)
+    {
+        $this->sparsityFactor = $sparsityFactor;
+    }
+
+    /**
      * @throws \Exception
      * @return int
      */
@@ -116,6 +148,18 @@ class EvenOverTimeDistribution extends AbstractDistribution implements
             throw new \Exception("MaxWinCount not set");
         }
         return $this->maxWinCount;
+    }
+
+    /**
+     * @throws \Exception
+     * @return float
+     */
+    public function getSparsityFactor()
+    {
+        if (null === $this->sparsityFactor) {
+            throw new \Exception("SparsityFactor not set");
+        }
+        return $this->sparsityFactor;
     }
 
     /**

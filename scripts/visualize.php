@@ -4,7 +4,7 @@ $loader = require __DIR__ . "/../vendor/autoload.php";
 
 \cli\Colors::enable();
 use InstantWin\Player;
-use InstantWin\Distribution\EvenOverTimeDistribution;
+use InstantWin\WinDistributions\EvenOverTimeDistribution;
 use InstantWin\TimePeriod;
 
 $screenCols = exec('tput cols');
@@ -16,7 +16,7 @@ for ($tries = 0; $tries < 20; $tries++) {
     $eachDot = ceil($durationInSeconds / ($screenCols-3));
 
     /*
-    use InstantWin\Distribution\FixedOddsDistribution;
+    use InstantWin\WinDistributions\FixedOddsDistribution;
     $dist = new FixedOddsDistribution();
     $dist->setOdds(0.002);
 

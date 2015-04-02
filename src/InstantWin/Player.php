@@ -2,9 +2,9 @@
 
 namespace InstantWin;
 
-use InstantWin\Distribution\AbstractDistribution;
-use InstantWin\Distribution\TimePeriodAwareInterface;
-use InstantWin\Distribution\WinAmountAwareInterface;
+use InstantWin\WinDistributions\AbstractDistribution;
+use InstantWin\WinDistributions\TimePeriodAwareInterface;
+use InstantWin\WinDistributions\WinAmountAwareInterface;
 
 /**
  * Allows for executing a play on an instant-win game
@@ -74,12 +74,12 @@ class Player
         }
 
         $odds = $this->getDistribution()->getOdds();
-        
+		
         return $this->generateRandomFloat() <= $odds;
     }
 
     /**
-     * @param \InstantWin\Distribution\AbstractDistribution $distribution
+     * @param \InstantWin\WinDistributions\AbstractDistribution $distribution
      * @return $this;
      */
     public function setDistribution($distribution)
@@ -90,7 +90,7 @@ class Player
 
     /**
      * @throws \Exception
-     * @return \InstantWin\Distribution\AbstractDistribution
+     * @return \InstantWin\WinDistributions\AbstractDistribution
      */
     public function getDistribution()
     {

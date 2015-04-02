@@ -1,6 +1,6 @@
 <?php
 
-namespace InstantWin\Distribution;
+namespace InstantWin\WinDistributions;
 
 
 class FixedOddsDistributionTest extends \PHPUnit_Framework_TestCase {

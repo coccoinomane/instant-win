@@ -28,12 +28,16 @@ class TimePeriod
     protected $currentTimestamp = null;
 
     /**
+	 * Fraction of time that has passed in the time interval so far
+	 * 
      * @return float
      */
     public function getCompletion()
     {
+
         // force completion to be greater than 0
         return max(1, $this->getCurrentTimestamp() - $this->getStartTimestamp()) / $this->getDuration();
+		
     }
 
     /**
@@ -82,10 +86,15 @@ class TimePeriod
 
     /**
      * @param int $currentTimestamp
+     * @throws \Exception
      * @return $this;
      */
     public function setCurrentTimestamp($currentTimestamp)
     {
+		if (($currentTimestamp > $this->endTimestamp) || ($currentTimestamp < $this->startTimestamp)) {
+            $errmsg = sprintf ("currentTimestamp (t=%g) out of bounds", $currentTimestamp);
+			throw new \Exception($errmsg);
+		}
         $this->currentTimestamp = $currentTimestamp;
         return $this;
     }

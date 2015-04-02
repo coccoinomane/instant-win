@@ -3,9 +3,10 @@
 $loader = require __DIR__ . "/../vendor/autoload.php";
 
 use InstantWin\Player;
-use InstantWin\Distribution\EvenOverTimeDistribution;
+use InstantWin\WinDistributions\EvenOverTimeDistribution;
 use InstantWin\TimePeriod;
 
+date_default_timezone_set('UTC');
 $midnightToday = strtotime("today midnight");
 $midnightTomorrow = strtotime("tomorrow midnight");
 $winsPerDay = 10;

@@ -9,7 +9,7 @@
 namespace InstantWin;
 
 
-use InstantWin\Distribution\FixedOddsDistribution;
+use InstantWin\WinDistributions\FixedOddsDistribution;
 
 class PlayerTest extends \PHPUnit_Framework_TestCase {
 

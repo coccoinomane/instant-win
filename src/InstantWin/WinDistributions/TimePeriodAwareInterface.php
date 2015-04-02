@@ -6,7 +6,7 @@
  * Time: 11:57 AM
  */
 
-namespace InstantWin\Distribution;
+namespace InstantWin\WinDistributions;
 
 use InstantWin\TimePeriod;
 

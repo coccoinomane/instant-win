@@ -1,6 +1,6 @@
 <?php
 
-namespace InstantWin\Distribution;
+namespace InstantWin\WinDistributions;
 
 /**
  * Defines distribution logic for awarding wins by using fixed odds. This will not attempt
@@ -8,7 +8,7 @@ namespace InstantWin\Distribution;
  *
  * @author Konr Ness <konrness@gmail.com>
  */
-class FixedOddsDistribution extends AbstractDistribution
+class FixedOddsDistribution extends AbstractWinDistribution
 {
 
     /**
