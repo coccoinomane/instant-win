@@ -79,8 +79,8 @@ class EvenOverTimeDistribution extends AbstractWinDistribution implements
             $odds = max ($odds, min (self::MIN_ODDS, 1.0/$this->getPlayCount()));
         
 		// debug
-        printf ("odds=%16.6g,\tdesiredWinCount-wins=%16.6g\n",
-            $odds, ($desiredWinCount - $this->getCurrentWinCount()));
+        // printf ("odds=%16.6g,\tdesiredWinCount-wins=%16.6g\n",
+        //     $odds, ($desiredWinCount - $this->getCurrentWinCount()));
 		
         return $odds;
 

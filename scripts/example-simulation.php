@@ -1,10 +1,35 @@
 #!/usr/bin/env php
 <?php
 
+/**
+ * Quickly simulate an instant-win lottery over a custom time period, assuming
+ * a certain number of players and prizes. The simulation is instantaneous,
+ * meaning that you can simulate a 60-day lottery in less than a second.
+ * 
+ * The timing of the plays is determined with a custom time probability distribution
+ * (using the PlayDistribution classes). Which of these players win is
+ * determined via a second probability distribution (implemented in the
+ * WinDistributions classes).
+ * 
+ * This script outputs two files with the play timings and the win timings,
+ * respectively:
+ * ./example-simulation.php plays.dat wins.dat
+ * Each file can be plotted as an histogram using, for example, GNU Octave
+ * (https://www.gnu.org/software/octave/):
+ * octave> plays=load("plays.dat"); wins=load("wins.dat");
+ * octave> subplot(1,2,1); hist(plays,20);
+ * octave> subplot(1,2,2); hist(wins,60);
+ *
+ *
+ * @author Guido W. Pettinari <guido.pettinari@gmail.com>
+ */
+
+
 $loader = require __DIR__ . "/../vendor/autoload.php";
 
 use InstantWin\Player;
 use InstantWin\PlayDistributions\FlatPlayDistribution;
+use InstantWin\PlayDistributions\PowerLawPlayDistribution;
 use InstantWin\WinDistributions\EvenOverTimeDistribution;
 use InstantWin\TimePeriod;
 
@@ -22,6 +47,10 @@ $maxWins = 40;
 
 // how many players in the full time interval? Set to 1 for a quick test run
 $num_plays = 10000;
+
+// how should be the players distributed over time?
+// $flatPlayDistribution = new FlatPlayDistribution(); // flat distribution
+$playDistribution = new PowerLawPlayDistribution(/*exponent*/2.0); // power law distribution
 
 // Amplitude of the wins probability distribution. A large value means
 // that prizes will be awarded more evenly in the time period, but also
@@ -45,29 +74,27 @@ $player->setMaxWins($maxWins);
 $player->setDistribution(new EvenOverTimeDistribution());
 $player->getDistribution()->setSparsityFactor($sparsityFactor);
 
-// create the distribution of plays and let it know about the time period
-$flatPlayDistribution = new FlatPlayDistribution();
-$flatPlayDistribution->setTimePeriod($timePeriod);
-$flatPlayDistribution->setMaxOdds(1.01*$flatPlayDistribution->getOdds($start));
+// let the distribution know about the time period
+$playDistribution->setTimePeriod($timePeriod);
 
 // open file that will contain the timings of plays
 parse_str(implode('&', array_slice($argv, 1)), $_GET);
 if (empty($argv[1]))
-	$playHistFile = 'play_hist.' . date('Ymd') . '.txt';
+    $playHistFile = 'play_hist.' . date('Ymd') . '.txt';
 else
-	$playHistFile = $argv[1];
-fopen($playHistFile, 'w'); 
+    $playHistFile = $argv[1];
+fopen($playHistFile, 'w');
 
 // open file that will contain the timings of wins
 if (empty($argv[2]))
-	$winHistFile = 'win_hist.' . date('Ymd') . '.txt';
+    $winHistFile = 'win_hist.' . date('Ymd') . '.txt';
 else
-	$winHistFile = $argv[2];
-fopen($winHistFile, 'w'); 
+    $winHistFile = $argv[2];
+fopen($winHistFile, 'w');
 
 // generate timings of plays and sort them from first to last
 for ($i=0; $i < $num_plays; $i++)
-	$playsArray[$i] = $flatPlayDistribution->draw();
+    $playsArray[$i] = $playDistribution->draw();
 sort($playsArray);
 
 // write to file the timings of the plays (in day units)

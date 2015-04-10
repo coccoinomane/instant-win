@@ -1,8 +1,25 @@
-#!/usr/bin/php
+#!/usr/bin/env php
 <?php
+
+/**
+ * Generate random numbers distributed according to a distribution function.
+ * This is a test of the PlayDistribution classes.
+ *
+ * This script outputs a file with the play timings:
+ * ./example-playdistribution.php plays.dat
+ * The file can be plotted as an histogram using, for example, GNU Octave
+ * (https://www.gnu.org/software/octave/):
+ * octave> plays=load("plays.dat"); hist(plays,20);
+ *
+ *
+ * @author Guido W. Pettinari <guido.pettinari@gmail.com>
+ */
+
+
 $loader = require __DIR__ . "/../vendor/autoload.php";
 
 use InstantWin\PlayDistributions\FlatPlayDistribution;
+use InstantWin\PlayDistributions\PowerLawPlayDistribution;
 use InstantWin\TimePeriod;
 
 
@@ -16,7 +33,11 @@ $start = strtotime("now");
 $end = strtotime("+10 seconds");
 
 // how many plays in the time period?
-$num_plays = 100000;
+$num_plays = 10000;
+
+// how should be the players distributed over time?
+// $flatPlayDistribution = new FlatPlayDistribution(); // flat distribution
+$playDistribution = new PowerLawPlayDistribution(/*exponent*/2.0); // power law distribution
 
 
 // ==========================================================
@@ -28,10 +49,8 @@ $timePeriod = new TimePeriod();
 $timePeriod->setStartTimestamp($start);
 $timePeriod->setEndTimestamp($end);
 
-// create the distribution and let it know about the time period
-$flatPlayDistribution = new FlatPlayDistribution();
-$flatPlayDistribution->setTimePeriod($timePeriod);
-$flatPlayDistribution->setMaxOdds(1.01*$flatPlayDistribution->getOdds($start));
+// let the distribution know about the time period
+$playDistribution->setTimePeriod($timePeriod);
 
 // name of file that will contain the times corresponding to plays
 parse_str(implode('&', array_slice($argv, 1)), $_GET);
@@ -43,7 +62,7 @@ fopen($histFile, 'w');
 
 // generate random numbers
 for ($i=0; $i < $num_plays; $i++) { 
-	$flatArray[$i] = $flatPlayDistribution->draw() - $start;
+	$flatArray[$i] = $playDistribution->draw() - $start;
 	// echo $flatArray[$i]. "<br />\n";
 }
 

@@ -1,6 +1,22 @@
 #!/usr/bin/env php
 <?php
 
+/**
+ * Simulate a custom number of plays at an instant-win lottery. The plays
+ * are evenly distributed across the lottery period.
+ * 
+ * This script is a more naive version of example-simulation.php, as it 
+ * supports only an even-time distribution of plays, and it is real-time,
+ * meaning that its execution time is equal to the lottery duration. Therefore,
+ * we suggest to set a short duration (e.g. 10 seconds).
+ *
+ * The script keeps track of the number of plays and wins
+ * by updating two files. Therefore, it can be called multiple
+ * times.
+ *
+ * @author Konr Ness <konrness@gmail.com>
+ */
+
 $loader = require __DIR__ . "/../vendor/autoload.php";
 
 use InstantWin\Player;
@@ -52,8 +68,8 @@ for ($i=0; $i < $num_plays; $i++) {
 	// evenly distribute the plays
 	if ($num_plays > 1)
 		usleep (($end-$start)/$num_plays*1e6);
-	
-	/**
+        
+    /**
 	 * Load the current wins
 	 */
 	$todayWinCountFile = 'win-count.' . date('Ymd') . '.txt';
@@ -80,7 +96,15 @@ for ($i=0; $i < $num_plays; $i++) {
 	/**
 	 * Update time period & player
 	 */
-	$timePeriod->setCurrentTimestamp(time());
+
+    // make sure that we do not exceed the end time; this will
+    // happen because $end=strtotime(...) is an integer while
+    // our classes deal with floats.
+    try {
+	    $timePeriod->setCurrentTimestamp(time());
+    } catch (Exception $e) {
+        continue;
+    }
 	$player->setTimePeriod($timePeriod);
 	$player->setCurWins($curWins);
 	$player->setPlayCount($curPlays);

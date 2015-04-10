@@ -21,12 +21,12 @@ abstract class AbstractPlayDistribution
     protected $timePeriod;
 
 	/**
-	 * Maximum value of the distribution function f(t), required to optimise the 
+	 * Maximum value of the distribution function f(t), required to optimize the 
 	 * rejection method.
 	 *
      * @var maxOdds
      */
-	protected $maxOdds;
+	protected $maxOdds = NULL;
 
 	/**
 	 * To generate random numbers, we use the int mt_rand(int $min, int $max) function,
@@ -54,14 +54,12 @@ abstract class AbstractPlayDistribution
 
 
     /**
-     * @param float $maxOdds
+     * Compute the maximum value of the distribution function, needed
+     * to optimize the rejection method used in the draw() method.
+     *
      * @return $this
      */
-    public function setMaxOdds($maxOdds)
-    {
-        $this->maxOdds = $maxOdds;
-        return $this;
-    }
+    abstract public function setMaxOdds();
 
 	/**
 	 * @throws \Exception
@@ -69,7 +67,7 @@ abstract class AbstractPlayDistribution
      */
     public function getMaxOdds()
     {
-        if (empty($this->maxOdds)) {
+        if (is_null($this->maxOdds)) {
             throw new \Exception("maxOdds not set");
         }
         return $this->maxOdds;
@@ -108,8 +106,8 @@ abstract class AbstractPlayDistribution
     public function draw()
 	{
 
-		if (empty($this->maxOdds))
-			throw new \Exception("Cannot use rejection method if you don't specify an upper limit for the PDF");
+		if (is_null($this->maxOdds))
+            $this->setMaxOdds();
 
 		$start = $this->getTimePeriod()->getStartTimestamp();
 		$end = $this->getTimePeriod()->getEndTimestamp();
@@ -117,7 +115,7 @@ abstract class AbstractPlayDistribution
 		do {
 			$random_time = $start + ((float)(mt_rand(0, self::SMOOTHNESS)) / self::SMOOTHNESS)*($end-$start);
 			$odds_of_time = $this->getOdds($random_time);
-			$random_odds = ((float)(mt_rand(0, self::SMOOTHNESS)) / self::SMOOTHNESS)*$this->maxOdds;
+			$random_odds = ((float)(mt_rand(0, self::SMOOTHNESS)) / self::SMOOTHNESS)*($this->maxOdds*1.01);
 		} while ($random_odds > $odds_of_time);
 		
 		// debug

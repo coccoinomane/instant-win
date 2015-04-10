@@ -42,12 +42,12 @@ class FlatPlayDistribution extends AbstractCDFPlayDistribution
         $start = $this->getTimePeriod()->getStartTimestamp();
         $end = $this->getTimePeriod()->getEndTimestamp();
         $current = $this->getTimePeriod()->getCurrentTimestamp();
-		$odds = ((float)($current - $start))/($end - $start);
+		$cdf = ((float)($current - $start))/($end - $start);
 
 		// debug
-		// printf ("odds = %12.4f ", $odds);
+		// printf ("cdf = %12.4f ", $cdf);
 		
-        return $odds;
+        return $cdf;
     }
 
 
@@ -71,6 +71,20 @@ class FlatPlayDistribution extends AbstractCDFPlayDistribution
 		// printf ("%12.4f %12.4f\n", $cdf_value, $time);
 		
         return $time;
+    }
+
+
+    /**
+     * The maximum of the distribution function is easily computed
+     * using its monotonicity.
+     *
+     * @return $this
+     */
+    public function setMaxOdds()
+    {
+        $start = $this->getTimePeriod()->getStartTimestamp();
+        $this->maxOdds = $this->getOdds($start);
+        return $this;
     }
 
 }

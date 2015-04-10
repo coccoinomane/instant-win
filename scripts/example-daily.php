@@ -1,5 +1,16 @@
 #!/usr/bin/php
 <?php
+
+/**
+ * Simulate a single play at an instant-win lottery.
+ *
+ * The script keeps track of the number of plays and wins
+ * by updating two files. Therefore, it can be called multiple
+ * times.
+ *
+ * @author Konr Ness <konrness@gmail.com>
+ */
+
 $loader = require __DIR__ . "/../vendor/autoload.php";
 
 use InstantWin\Player;
