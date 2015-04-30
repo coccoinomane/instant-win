@@ -1,6 +1,7 @@
 #!/usr/bin/php
 <?php
-$loader = require __DIR__ . "/../vendor/autoload.php";
+
+require __DIR__ . '/../src/autoload.php';
 
 \cli\Colors::enable();
 use InstantWin\Player;

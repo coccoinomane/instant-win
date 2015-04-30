@@ -15,8 +15,7 @@
  * @author Guido W. Pettinari <guido.pettinari@gmail.com>
  */
 
-
-$loader = require __DIR__ . "/../vendor/autoload.php";
+require __DIR__ . '/../src/autoload.php';
 
 use InstantWin\PlayDistributions\FlatPlayDistribution;
 use InstantWin\PlayDistributions\PowerLawPlayDistribution;
