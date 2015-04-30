@@ -48,8 +48,8 @@ $maxWins = 40;
 $num_plays = 10000;
 
 // how should be the players distributed over time?
-// $flatPlayDistribution = new FlatPlayDistribution(); // flat distribution
-$playDistribution = new PowerLawPlayDistribution(/*exponent*/2.0); // power law distribution
+$playDistribution = new FlatPlayDistribution(); // flat distribution
+// $playDistribution = new PowerLawPlayDistribution(/*exponent*/2.0); // power law distribution
 
 // Amplitude of the wins probability distribution. A large value means
 // that prizes will be awarded more evenly in the time period, but also
