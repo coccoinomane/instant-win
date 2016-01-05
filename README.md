@@ -1,7 +1,17 @@
 instant-win
 ===========
 
-PHP class for randomly awarding a fixed amount of instant-wins over a set period of time.
+PHP class for randomly awarding a fixed amount of instant-wins over a set period
+of time.
+
+This project extends the original project at https://github.com/konrness/instant-win 
+by including a simulator script to test the behaviour of the algorithm over a
+(simulated) extended time period. It also makes explicit some algorithm parameters
+that were implicitly defined in the original code.
+
+Thank you to [Korness](https://github.com/konrness) for first writing the algorithm!
+
+Refer to https://github.com/coccoinomane/instant-win for the latest version.
 
 # Usage
 
